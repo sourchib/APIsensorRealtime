@@ -2,11 +2,20 @@
 
 This project is a RESTful API backend for a Greenhouse IoT system, built with Express.js, PostgreSQL, and an MQTT integration for device control.
 
+## Technology Stack
+
+-   **Runtime**: Node.js (Express.js)
+-   **Database**: PostgreSQL
+-   **ORM**: Sequelize
+-   **Messaging**: MQTT (Mosquitto)
+-   **Frontend**: HTML5, Gauge.js (for real-time monitoring)
+
 ## Features
 
 1.  **Sensor Data Ingestion**: Receives and stores temperature, humidity, and other sensor readings.
 2.  **Device Control**: Sends commands (ON/OFF or 0/1) to IoT devices via MQTT and logs actions.
-3.  **System Status**: Provides health monitoring for the backend, database, and MQTT connection.
+3.  **Real-time Monitoring**: Visual interface to view sensor gauges and control devices.
+4.  **System Status**: Provides health monitoring for the backend, database, and MQTT connection.
 
 ## Prerequisites
 
@@ -45,6 +54,13 @@ npm start
 The server will run on `http://localhost:3000` (or your configured port).
 The database tables will be automatically created in your PostgreSQL database upon startup.
 
+## Web Interface
+
+-   **Dashboard**: [http://localhost:3000/monitor](http://localhost:3000/monitor)
+    -   View real-time gauges for Temperature, Humidity, Soil Moisture, and Light.
+    -   Control devices (Lamp, Pump) directly from the UI.
+    -   Visual feedback for device status (ON/OFF).
+
 ## API Endpoints
 
 ### 1. Ingest Sensor Data
@@ -63,14 +79,17 @@ The database tables will be automatically created in your PostgreSQL database up
 -   **Body**:
     ```json
     {
-      "device_id": "fan_01",
+      "device_id": "pump",
       "command": 1
     }
     ```
     *Note: `command` can be `0` (OFF) or `1` (ON), or string `"OFF"` / `"ON"`.*
+    *Supported Devices: `lamp`, `pump`, `fan`.*
+
 -   **Effect**: 
-    1. Publishes `{"command": "ON", "value": 1}` to MQTT topic `greenhouse/control/fan_01`.
-    2. Logs the action to the `device_logs` table in the database.
+    1. Publishes `{"device": "pump", "state": 1}` to MQTT topic `device/control`.
+    2. Logs the action to the `device_logs` table (including `category` and `device_name`).
+    3. Updates the `sensor_data` table for real-time UI reflection.
 
 ### 3. System Status
 -   **URL**: `GET /status`
@@ -87,4 +106,7 @@ The database tables will be automatically created in your PostgreSQL database up
 ## Testing
 
 You can use Postman, curl, or any API client to test the endpoints.
-To test MQTT, subscribe to the topic `greenhouse/control/#` using an MQTT client (like MQTT Explorer or `mosquitto_sub`) to see the messages being published.
+To test MQTT, subscribe to the topic `device/control` using an MQTT client:
+```bash
+mosquitto_sub -h localhost -t device/control
+```

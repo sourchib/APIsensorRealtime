@@ -11,6 +11,14 @@ const DeviceLog = sequelize.define('DeviceLog', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    device_name: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    category: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     value: {
         type: DataTypes.INTEGER,
         allowNull: false,

@@ -17,7 +17,7 @@ var app = express();
 // app.set('view engine', 'pug');
 
 // Database Synchronization
-sequelize.sync().then(() => {
+sequelize.sync({ alter: true }).then(() => {
   console.log('Database synced');
 }).catch(err => {
   console.error('Failed to sync database:', err);
@@ -31,6 +31,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve Sensor Monitor View
+app.get('/monitor', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'monitor.html'));
+});
 
 // Mount API routes
 app.use('/', apiRouter);

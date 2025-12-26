@@ -30,3 +30,19 @@ exports.ingestSensorData = async (req, res) => {
         return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
     }
 };
+
+exports.getRecentData = async (req, res) => {
+    try {
+        const data = await SensorData.findAll({
+            limit: 20,
+            order: [['createdAt', 'DESC']]
+        });
+        return res.status(200).json({
+            status: 'success',
+            data: data
+        });
+    } catch (err) {
+        console.error('Error fetching sensor data:', err);
+        return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+    }
+};
