@@ -394,6 +394,32 @@
             </p>
         </section>
 
+        <!-- Section 6: API Spec -->
+        <section id="api-spec">
+            <h2>6. API Specification Summary</h2>
+            <p>The system exposes the following RESTful endpoints for integration:</p>
+
+            <h3>Authentication</h3>
+            <ul>
+                <li><code>POST /auth/register</code>: Register new users (Admin/Customer).</li>
+                <li><code>POST /auth/login</code>: Authenticate and retrieve JWT token.</li>
+            </ul>
+
+            <h3>IoT & Sensors</h3>
+            <ul>
+                <li><code>POST /sensor-data</code>: Ingest telemetry from sensors.</li>
+                <li><code>POST /device-control</code>: Send commands to actuators (Lamp, Pump).</li>
+                <li><code>POST /wifi-log</code>: Log WiFi sniffer data from ESP32.</li>
+                <li><code>GET /sensor/data</code>: Retrieve latest sensor readings for the dashboard.</li>
+                <li><code>GET /wifi-logs</code>: Retrieve historical WiFi scan data.</li>
+            </ul>
+
+            <h3>System</h3>
+            <ul>
+                <li><code>GET /status</code>: Health check for Database and MQTT connection.</li>
+            </ul>
+        </section>
+
     </div>
 </body>
 

@@ -96,6 +96,27 @@ The database tables will be automatically created in your PostgreSQL database up
     }
     ```
 
+### 4. Authentication
+-   **Register**: `POST /auth/register`
+    -   **Body**: `{"username": "user", "password": "password", "role_id": 2}`
+-   **Login**: `POST /auth/login`
+    -   **Body**: `{"username": "user", "password": "password"}`
+    -   **Response**: Returns `token` (JWT) and user details.
+
+### 5. WiFi Sniffer (ESP32)
+-   **Log Data**: `POST /wifi-log`
+    -   **Body**:
+        ```json
+        {
+          "ssid": "MyWiFi",
+          "bssid": "00:11:22:33:44:55",
+          "rssi": -65,
+          "channel": 6,
+          "encryption_type": "WPA2"
+        }
+        ```
+-   **View Logs**: `GET /wifi-logs`
+
 ## Testing
 
 You can use Postman, curl, or any API client to test the endpoints.
