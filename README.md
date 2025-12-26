@@ -54,15 +54,6 @@ npm start
 The server will run on `http://localhost:3000` (or your configured port).
 The database tables will be automatically created in your PostgreSQL database upon startup.
 
-## Web Interface
-
-![Dashboard Demo](public/images/demo_dashboard.png)
-
--   **Dashboard**: [http://localhost:3000/monitor](http://localhost:3000/monitor)
-    -   View real-time gauges for Temperature, Humidity, Soil Moisture, and Light.
-    -   Control devices (Lamp, Pump) directly from the UI.
-    -   Visual feedback for device status (ON/OFF).
-
 ## API Endpoints
 
 ### 1. Ingest Sensor Data

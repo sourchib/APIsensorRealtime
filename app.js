@@ -7,18 +7,57 @@ var logger = require('morgan');
 const sequelize = require('./config/database');
 const mqttService = require('./services/mqttService');
 const apiRouter = require('./routes/api');
-// var indexRouter = require('./routes/index'); // API doesn't need these placeholders
-// var usersRouter = require('./routes/users');
+
+// Import Models for Associations
+const Device = require('./models/Device');
+const DeviceLog = require('./models/DeviceLog');
+const Role = require('./models/Role');
+const User = require('./models/User');
+const WifiLog = require('./models/WifiLog'); // Registered for DDL generation
+
+// Define Relationships
+Device.hasMany(DeviceLog, { foreignKey: 'device_id' });
+DeviceLog.belongsTo(Device, { foreignKey: 'device_id' });
+
+Role.hasMany(User, { foreignKey: 'role_id' });
+User.belongsTo(Role, { foreignKey: 'role_id' });
 
 var app = express();
 
-// view engine setup removed for API
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'pug');
-
 // Database Synchronization
-sequelize.sync({ alter: true }).then(() => {
-  console.log('Database synced');
+sequelize.sync({ alter: true }).then(async () => {
+  console.log('Database synced (Schema Updated)');
+
+  // Seed Roles
+  try {
+    await Role.findOrCreate({ where: { id: 1 }, defaults: { name: 'admin', description: 'Can manage dashboard, CRUD logs' } });
+    await Role.findOrCreate({ where: { id: 2 }, defaults: { name: 'customer', description: 'Can monitor temp and devices' } });
+    console.log('Roles seeded');
+  } catch (err) { console.error('Role seeding error:', err); }
+
+  // Seed Default Users (Demo)
+  try {
+    const adminExists = await User.findOne({ where: { username: 'admin' } });
+    if (!adminExists) await User.create({ username: 'admin', password: 'adminpassword', role_id: 1 });
+
+    const userExists = await User.findOne({ where: { username: 'user' } });
+    if (!userExists) await User.create({ username: 'user', password: 'userpassword', role_id: 2 });
+    console.log('Users seeded');
+  } catch (err) { console.error('User seeding error:', err); }
+
+  // Seed Devices
+  const Device = require('./models/Device');
+  try {
+    await Device.bulkCreate([
+      { name: 'lamp', category: 'Lighting', type: 'Actuator' },
+      { name: 'pump', category: 'Irrigation', type: 'Actuator' },
+      { name: 'fan', category: 'Ventilation', type: 'Actuator' }
+    ], { ignoreDuplicates: true });
+    console.log('Devices seeded successfully');
+  } catch (err) {
+    console.error('Seeding error:', err);
+  }
+
 }).catch(err => {
   console.error('Failed to sync database:', err);
 });

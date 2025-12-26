@@ -44,6 +44,7 @@ exports.controlDevice = async (req, res) => {
         // Determine Category and Device Name
         let category = 'General';
         let device_name = 'Unknown Device';
+        let type = 'Actuator';
 
         if (device_id.includes('lamp')) {
             category = 'Lighting';
@@ -56,9 +57,19 @@ exports.controlDevice = async (req, res) => {
             device_name = 'Ventilation Fan';
         }
 
+        // Find Device to get PK ID
+        const Device = require('../models/Device');
+        const [deviceRecord] = await Device.findOrCreate({
+            where: { name: device_id }, // Assuming device_id from request is 'lamp', 'pump', etc.
+            defaults: {
+                category: category,
+                type: type
+            }
+        });
+
         // 2. Log to Database (DeviceLog for command history)
         await DeviceLog.create({
-            device_id: device_id,
+            device_id: deviceRecord.id, // Use Integer PK
             device_name: device_name,
             category: category,
             value: numericValue,

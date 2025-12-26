@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenhouse IoT Backend API - Project Report</title>
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --text-color: #333;
+            --bg-color: #fff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background: white;
+        }
+
+        /* Cover Page */
+        .cover-page {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: 50px;
+        }
+
+        .cover-page h1 {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .cover-page h2 {
+            font-size: 1.5rem;
+            color: #666;
+            font-weight: normal;
+        }
+
+        .cover-page .meta {
+            margin-top: 50px;
+            font-size: 1.1rem;
+            color: #888;
+        }
+
+        /* Content Sections */
+        section {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        h3 {
+            color: #444;
+            margin-top: 20px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul {
+            margin-bottom: 15px;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid var(--primary-color);
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Images */
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                font-size: 12pt;
+                background: white;
+            }
+
+            .container {
+                width: 100%;
+                max-width: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .cover-page {
+                height: 100vh;
+                border-bottom: none;
+            }
+
+            h2 {
+                page-break-before: always;
+            }
+
+            h2:first-of-type {
+                page-break-before: auto;
+            }
+
+            a {
+                text-decoration: none;
+                color: black;
+            }
+        }
+
+        .btn-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .btn-print:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button onclick="window.print()" class="btn-print no-print">Save as PDF</button>
+
+    <div class="container">
+        <!-- Cover Page -->
+        <div class="cover-page">
+            <h1>Greenhouse IoT Backend API</h1>
+            <h2>Technical Documentation & Architecture Report</h2>
+            <div class="meta">
+                <p><strong>Prepared for:</strong> Evaluation Committee</p>
+                <p><strong>Date:</strong> December 26, 2025</p>
+                <p><strong>Version:</strong> 1.0.0</p>
+            </div>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="no-print">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#overview">1. Project Overview</a></li>
+                <li><a href="#architecture">2. System Architecture</a></li>
+                <li><a href="#mqtt">3. MQTT Integration Logic</a></li>
+                <li><a href="#error-handling">4. Error Handling & Edge Cases</a></li>
+                <li><a href="#design">5. Design Decisions</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 1: Project Overview -->
+        <section id="overview">
+            <h2>1. Project Overview</h2>
+            <p>
+                The Greenhouse IoT Backend API is a robust, scalable solution designed to monitor and control greenhouse
+                environments.
+                It serves as the central hub connecting IoT sensors, execution devices (lamps, pumps), and user facing
+                dashboards.
+            </p>
+            <p>
+                Key capabilities include real-time data ingestion from sensors (Temperature, Humidity, Soil Moisture,
+                Light),
+                remote device control via MQTT, and historical data logging for analysis.
+            </p>
+            <img src="./public/images/demo_dashboard.png" alt="Dashboard Screenshot" style="border: 1px solid #ddd;">
+            <p><em>Figure 1: Real-time Monitoring Dashboard</em></p>
+        </section>
+
+        <!-- Section 2: Architecture -->
+        <section id="architecture">
+            <h2>2. System Architecture</h2>
+            <p>
+                The project employs a <strong>Layered Architecture</strong> to ensure Clean Code principles, separation
+                of concerns, and maintainability.
+            </p>
+
+            <h3>2.1 Tech Stack</h3>
+            <table>
+                <tr>
+                    <th>Component</th>
+                    <th>Technology</th>
+                    <th>Role</th>
+                </tr>
+                <tr>
+                    <td>Runtime Environment</td>
+                    <td>Node.js</td>
+                    <td>Asynchronous, event-driven execution.</td>
+                </tr>
+                <tr>
+                    <td>Web Framework</td>
+                    <td>Express.js</td>
+                    <td>Handling HTTP REST API requests.</td>
+                </tr>
+                <tr>
+                    <td>Database</td>
+                    <td>PostgreSQL</td>
+                    <td>Relational storage for logs and sensor data.</td>
+                </tr>
+                <tr>
+                    <td>ORM</td>
+                    <td>Sequelize</td>
+                    <td>Schema management and database abstraction.</td>
+                </tr>
+                <tr>
+                    <td>Messaging</td>
+                    <td>MQTT (Mosquitto)</td>
+                    <td>Real-time M2M communication.</td>
+                </tr>
+            </table>
+
+            <h3>2.2 Architecture Diagram</h3>
+            <pre>
+[ IoT Sensors ] --(MQTT)--> [ Broker ] --(Sub)--> [ Backend Service ]
+                                                       |
+[ User / Web ] --(REST)--> [ API Layer ] --(ORM)--> [ Database ]
+                                  |
+                               (Pub)
+                                  v
+                             [ Broker ] --(MQTT)--> [ IoT actuators ]
+            </pre>
+
+            <h3>2.3 Folder Structure Strategy</h3>
+            <ul>
+                <li><strong>/controllers</strong>: Orchestrates request handling and validation.</li>
+                <li><strong>/services</strong>: Contains business logic (e.g., MQTT communication) separate from HTTP
+                    layer.</li>
+                <li><strong>/models</strong>: Defines database schemas using Sequelize.</li>
+                <li><strong>/routes</strong>: Maps API endpoints to controllers.</li>
+            </ul>
+
+            <h3>2.4 Database Schema & System Flow</h3>
+            <p>
+                The following diagram illustrates the entity relationships and data flow within the system, including
+                the new
+                User-Role authentication model and the link between Devices and their Logs.
+            </p>
+            <img src="./public/images/schema_flow.png" alt="Database Schema and Flow" style="border: 1px solid #ddd;">
+            <p><em>Figure 2: Entity Relationship Diagram (ERD) & System Flow</em></p>
+        </section>
+
+        <!-- Section 3: MQTT -->
+        <section id="mqtt">
+            <h2>3. MQTT Integration Logic</h2>
+            <p>
+                MQTT (Message Queuing Telemetry Transport) is used for its lightweight, low-bandwidth nature, ideal for
+                IoT devices.
+            </p>
+
+            <h3>3.1 Topic Structure</h3>
+            <ul>
+                <li><strong>Subscribe (Sensors)</strong>: <code>sensor/#</code> (e.g., <code>sensor/temp</code>) - The
+                    backend listens for incoming data here.</li>
+                <li><strong>Publish (Control)</strong>: <code>device/control</code> - The backend sends commands to this
+                    topic.</li>
+            </ul>
+
+            <h3>3.2 Payload Design</h3>
+            <p>Control messages follow a strict JSON schema for interoperability:</p>
+            <pre>
+{
+  "device": "pump",   // Target Device ID
+  "state": 1          // 1 = ON, 0 = OFF
+}
+            </pre>
+
+            <h3>3.3 Implementation Details</h3>
+            <p>
+                The <code>mqttService.js</code> module manages a persistent connection to the broker.
+                It handles reconnection logic automatically and allows the rest of the application to publish messages
+                without knowing the underlying protocol details.
+            </p>
+        </section>
+
+        <!-- Section 4: Error Handling -->
+        <section id="error-handling">
+            <h2>4. Error Handling & Edge Cases</h2>
+            <p>
+                Reliability is critical in IoT systems. The application implements several strategies to handle failures
+                gracefully:
+            </p>
+
+            <h3>4.1 Input Validation</h3>
+            <p>
+                We use <strong>Joi</strong> validation schemas for all API endpoints. This prevents malformed data
+                (e.g., invalid device IDs or non-numeric sensor values)
+                from penetrating the business logic layer.
+            </p>
+
+            <h3>4.2 Connection Resilience</h3>
+            <p>
+                If the MQTT broker or Database becomes unreachable:
+            </p>
+            <ul>
+                <li>The API returns appropriate <code>500 Internal Server Error</code> responses with descriptive
+                    messages.</li>
+                <li>The system logs the error to the console for debugging.</li>
+                <li>The <code>/status</code> endpoint reflects the "disconnected" state, allowing monitoring tools to
+                    detect the outage.</li>
+            </ul>
+
+            <h3>4.3 Data Integrity</h3>
+            <p>
+                PostgreSQL constraints (Not Null, Foreign Keys) and Sequelize model validation ensure that incomplete
+                data is never stored.
+                Devices are categorized automatically (Lighting, Irrigation, Ventilation) to prevent categorization
+                errors.
+            </p>
+        </section>
+
+        <!-- Section 5: Design Decisions -->
+        <section id="design">
+            <h2>5. Design Decisions</h2>
+
+            <h3>Why PostgreSQL over MongoDB?</h3>
+            <p>
+                While MongoDB is popular for JSON sensor data, PostgreSQL was chosen for its strict schema enforcement
+                and powerful time-series capabilities.
+                Structured relational data allows for easier reporting and complex queries (e.g., "Average temperature
+                per hour").
+            </p>
+
+            <h3>Why Layered Architecture?</h3>
+            <p>
+                A Monolithic function approach is hard to test. By separating <strong>Controllers</strong> (HTTP),
+                <strong>Services</strong> (Logic), and <strong>Models</strong> (Data),
+                we ensure that each part of the system can be tested and modified independently. For example, we could
+                swap the MQTT library without touching the Controller code.
+            </p>
+        </section>
+
+    </div>
+</body>
+
+</html>

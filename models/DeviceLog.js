@@ -8,7 +8,7 @@ const DeviceLog = sequelize.define('DeviceLog', {
         autoIncrement: true
     },
     device_id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER, // Now references Device.id (Integer)
         allowNull: false
     },
     device_name: {

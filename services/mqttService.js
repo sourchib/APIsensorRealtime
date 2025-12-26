@@ -59,16 +59,58 @@ const connect = () => {
                 console.log(`[DB Success] Saved MQTT data (strict format) to database.`);
             }
             // 2. Handle Device Control: { "device": "pump", "state": 1 }
+            // 2. Handle Device Control: { "device": "pump", "state": 1 }
             else if (data.device && data.state !== undefined) {
                 const val = Number(data.state);
                 const cmdString = val === 1 ? 'ON' : 'OFF';
+                const deviceStr = data.device;
 
+                // Determine Category & Name (Mirroring controller logic)
+                let category = 'General';
+                let device_name = 'Unknown Device';
+                let type = 'Actuator';
+
+                if (deviceStr.includes('lamp')) {
+                    category = 'Lighting';
+                    device_name = 'Greenhouse Lamp';
+                } else if (deviceStr.includes('pump')) {
+                    category = 'Irrigation';
+                    device_name = 'Water Pump';
+                } else if (deviceStr.includes('fan')) {
+                    category = 'Ventilation';
+                    device_name = 'Ventilation Fan';
+                }
+
+                // Find/Create Device to get Integer PK
+                const Device = require('../models/Device');
+                const [deviceRecord] = await Device.findOrCreate({
+                    where: { name: deviceStr },
+                    defaults: {
+                        category: category,
+                        type: type
+                    }
+                });
+
+                // Log to DeviceLog
                 await DeviceLog.create({
-                    device_id: data.device,
+                    device_id: deviceRecord.id, // Integer PK
+                    device_name: device_name,
+                    category: category,
                     value: val,
                     command_string: cmdString
                 });
-                console.log(`[DB Success] Logged Device Control: ${data.device} -> ${cmdString} (${val})`);
+
+                // Update SensorData for Monitor UI
+                // Supports 'lamp', 'pump', 'fan'
+                if (['lamp', 'pump', 'fan'].includes(deviceStr)) {
+                    await SensorData.create({
+                        sensor_type: deviceStr, // matches findLatest() in monitor setup
+                        value: val,
+                        unit: 'state'
+                    });
+                }
+
+                console.log(`[DB Success] Logged Device Control via MQTT: ${deviceStr} -> ${cmdString} (${val})`);
             }
             // 3. Flexible Format: { "temperature": 25, "humidity": 70 }
             else {
