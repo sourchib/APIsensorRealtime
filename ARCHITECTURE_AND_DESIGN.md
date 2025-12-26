@@ -9,9 +9,42 @@ The system follows a **Layered Architecture** pattern to ensure separation of co
 -   **Service Layer (`services/`)**: Encapsulates business logic and external integrations. Specifically, `mqttService.js` handles all MQTT-related complexities.
 -   **Data Access Layer (`models/` & `config/`)**: Manages database interactions. We use **Sequelize** as an ORM to interact with **PostgreSQL**. This abstracts raw SQL queries and allows for easy schema management.
 
-### Data Flow
-1.  **Sensor Data**: IoT Sensor -> HTTP POST -> Controller -> Validation -> Model -> PostgreSQL Database.
-2.  **Device Control**: User/Client -> HTTP POST -> Controller -> Validation -> MQTT Service -> MQTT Broker -> IoT Device.
+### Data Flow Diagrams
+
+#### 1. Data Ingestion Pipeline (Sensor to DB)
+*Real-time data collection from sensors.*
+```mermaid
+[ IoT Sensor ] --(MQTT Topic: sensor/#)--> [ MQTT Broker ]
+                                                |
+                                          (Subscribes)
+                                                v
+                                      [ Backend Service ]
+                                      (mqttService.js)
+                                                |
+                                           (Writes)
+                                                v
+                                      [ PostgreSQL DB ]
+```
+
+#### 2. Data Consumption & AI (Dashboard Reading Data)
+*Dashboard/AI analyzing historical data.*
+```mermaid
+[ Dashboard / AI ] --(HTTP GET /sensor-data)--> [ REST API ]
+                                                     |
+                                                (Queries)
+                                                     v
+                                            [ PostgreSQL DB ]
+```
+
+#### 3. Device Control (Dashboard Controlling Device)
+*User sending commands to devices.*
+```mermaid
+[ User/Dashboard ] --(HTTP POST /device-control)--> [ REST API ]
+                                                        |
+                                                  (Publishes)
+                                                        v
+                                              [ MQTT Broker ] --(MQTT Topic: device/#)--> [ IoT Device ]
+```
 
 ## 2. MQTT Integration
 
