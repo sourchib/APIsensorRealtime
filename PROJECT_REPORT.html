@@ -278,6 +278,8 @@
             <pre>
 [ IoT Sensors ] --(MQTT)--> [ Broker ] --(Sub)--> [ Backend Service ]
                                                        |
+[ ESP32 Sniffer ] --(HTTP POST)----------------------> |
+                                                       |
 [ User / Web ] --(REST)--> [ API Layer ] --(ORM)--> [ Database ]
                                   |
                                (Pub)

@@ -1,0 +1,259 @@
+{
+    "info": {
+        "_postman_id": "a1b2c3d4-e5f6-7890-1234-56789abcdef0",
+        "name": "Greenhouse IoT API",
+        "description": "Postman collection for the Greenhouse Backend API including IoT control, sensor data, and authentication.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "System Status",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/status",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "status"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Auth - Register",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"username\": \"new_user\",\n    \"password\": \"secret123\",\n    \"role_id\": 2\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/auth/register",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "auth",
+                        "register"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Auth - Login",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "var jsonData = pm.response.json();",
+                            "if (jsonData.token) {",
+                            "    pm.environment.set(\"jwt_token\", jsonData.token);",
+                            "    console.log(\"Token saved to environment variable 'jwt_token'\");",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"adminpassword\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/auth/login",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "auth",
+                        "login"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Sensor Data - Ingest",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"sensor_type\": \"temperature\",\n    \"value\": 28.5,\n    \"unit\": \"Celsius\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/sensor-data",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "sensor-data"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Sensor Data - Get Recent",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/sensor/data",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "sensor",
+                        "data"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Device Control (Pump ON)",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"device_id\": \"pump\",\n    \"command\": 1\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/device-control",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "device-control"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Device Control (Lamp OFF)",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"device_id\": \"lamp\",\n    \"command\": 0\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/device-control",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "device-control"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "WiFi Sniffer - Log Data",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"ssid\": \"Greenhouse_Guest\",\n    \"bssid\": \"AA:BB:CC:DD:EE:FF\",\n    \"rssi\": -72,\n    \"channel\": 6,\n    \"encryption_type\": \"WPA2\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/wifi-log",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "wifi-log"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "WiFi Sniffer - Get Logs",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/wifi-logs",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "wifi-logs"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}

@@ -120,6 +120,9 @@ The database tables will be automatically created in your PostgreSQL database up
 ## Testing
 
 You can use Postman, curl, or any API client to test the endpoints.
+
+**Postman Collection**: A `Greenhouse_API.postman_collection.json` file is included in the project root. Import this into Postman to get pre-configured requests for all endpoints.
+
 To test MQTT, subscribe to the topic `device/control` using an MQTT client:
 ```bash
 mosquitto_sub -h localhost -t device/control
