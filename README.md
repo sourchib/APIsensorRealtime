@@ -56,6 +56,8 @@ The database tables will be automatically created in your PostgreSQL database up
 
 ## Web Interface
 
+![Dashboard Demo](public/images/demo_dashboard.png)
+
 -   **Dashboard**: [http://localhost:3000/monitor](http://localhost:3000/monitor)
     -   View real-time gauges for Temperature, Humidity, Soil Moisture, and Light.
     -   Control devices (Lamp, Pump) directly from the UI.
